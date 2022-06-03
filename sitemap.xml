@@ -2,19 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://killdayu.com/posts/2022.6.3/</loc>
+    <lastmod>2022-06-03T19:10:33+08:00</lastmod>
+  </url><url>
     <loc>https://killdayu.com/</loc>
-    <lastmod>2022-05-13T16:45:37+08:00</lastmod>
+    <lastmod>2022-06-03T19:10:33+08:00</lastmod>
   </url><url>
     <loc>https://killdayu.com/tags/life/</loc>
-    <lastmod>2022-05-13T16:45:37+08:00</lastmod>
+    <lastmod>2022-06-03T19:10:33+08:00</lastmod>
   </url><url>
     <loc>https://killdayu.com/posts/</loc>
-    <lastmod>2022-05-13T16:45:37+08:00</lastmod>
+    <lastmod>2022-06-03T19:10:33+08:00</lastmod>
   </url><url>
     <loc>https://killdayu.com/tags/</loc>
-    <lastmod>2022-05-13T16:45:37+08:00</lastmod>
+    <lastmod>2022-06-03T19:10:33+08:00</lastmod>
   </url><url>
-    <loc>https://killdayu.com/posts/%E6%97%A5%E5%AF%84_5.13/</loc>
+    <loc>https://killdayu.com/posts/2022.5.13/</loc>
     <lastmod>2022-05-13T16:45:37+08:00</lastmod>
   </url><url>
     <loc>https://killdayu.com/posts/hello-world/</loc>
