@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>dayu&#39;s blog</title>
-    <link>https://killdayu.com/</link>
-    <description>Recent content on dayu&#39;s blog</description>
+    <title>tips on dayu&#39;s blog</title>
+    <link>https://killdayu.com/tags/tips/</link>
+    <description>Recent content in tips on dayu&#39;s blog</description>
     <image>
       <url>https://killdayu.com/papermod-cover.png</url>
       <link>https://killdayu.com/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 06 Jun 2022 12:53:21 +0800</lastBuildDate><atom:link href="https://killdayu.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Jun 2022 12:53:21 +0800</lastBuildDate><atom:link href="https://killdayu.com/tags/tips/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Dingtalk_location</title>
       <link>https://killdayu.com/posts/dingtalk_location/</link>
@@ -27,35 +27,6 @@
       <guid>https://killdayu.com/posts/supercookie/</guid>
       <description>我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。 https://github.com/jonasstrehle/supercookie https://supercookie.me/workwise</description>
     </item>
-    
-    <item>
-      <title>2022.6.3</title>
-      <link>https://killdayu.com/posts/2022.6.3/</link>
-      <pubDate>Fri, 03 Jun 2022 19:10:33 +0800</pubDate>
-      
-      <guid>https://killdayu.com/posts/2022.6.3/</guid>
-      <description>好久不见，冒个泡，我只是废物。</description>
-    </item>
-    
-    <item>
-      <title>2022.5.13</title>
-      <link>https://killdayu.com/posts/2022.5.13/</link>
-      <pubDate>Fri, 13 May 2022 16:45:37 +0800</pubDate>
-      
-      <guid>https://killdayu.com/posts/2022.5.13/</guid>
-      <description>今早6点多才睡，因为手机快没电了。下午竟然1点多就醒了，然后看了下社区微信群，今天核酸下午4点就停了，之前明明是晚上9点，然后下午5点。。。。然后就不想去了，躺在床上纠结到了3点半，唉还是去吧，不然搞弹窗了又是一堆事，影响我周末躺平。测了下app的抓包，貌似发现了新的tips。凌晨刷知乎刷到了绝命毒师，感觉还不错，今晚开始刷剧。。。</description>
-    </item>
-    
-    <item>
-      <title>Hello World</title>
-      <link>https://killdayu.com/posts/hello_world/</link>
-      <pubDate>Thu, 12 May 2022 19:44:56 +0800</pubDate>
-      
-      <guid>https://killdayu.com/posts/hello_world/</guid>
-      <description>print(&amp;#34;Hello World!&amp;#34;) </description>
-    </item>
-    
-    
     
   </channel>
 </rss>
