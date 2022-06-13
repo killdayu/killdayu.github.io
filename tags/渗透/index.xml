@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>life on dayu&#39;s blog</title>
-    <link>https://killdayu.com/tags/life/</link>
-    <description>Recent content in life on dayu&#39;s blog</description>
+    <title>渗透 on dayu&#39;s blog</title>
+    <link>https://killdayu.com/tags/%E6%B8%97%E9%80%8F/</link>
+    <description>Recent content in 渗透 on dayu&#39;s blog</description>
     <image>
       <url>https://killdayu.com/papermod-cover.png</url>
       <link>https://killdayu.com/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 10 Jun 2022 12:37:22 +0800</lastBuildDate><atom:link href="https://killdayu.com/tags/life/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 13 Jun 2022 12:35:46 +0800</lastBuildDate><atom:link href="https://killdayu.com/tags/%E6%B8%97%E9%80%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>HTB_Paper</title>
+      <link>https://killdayu.com/posts/htb_paper/</link>
+      <pubDate>Mon, 13 Jun 2022 12:35:46 +0800</pubDate>
+      
+      <guid>https://killdayu.com/posts/htb_paper/</guid>
+      <description>第一次玩htb，感觉还不错。
+https://www.hackthebox.com/
+1.准备工作 配一下openvpn mac，windows
+可以直接用客户端打开
+linux
+sudo openvpn lab_lker.ovpn 2.user.txt 网上教程很多，就不细说了。
+┌──(kali㉿kali)-[~/kali] └─$ nmap -sV 10.10.11.143 1 ⚙ Starting Nmap 7.91 ( https://nmap.org ) at 2022-06-13 01:23 EDT Nmap scan report for office.paper (10.10.11.143) Host is up (0.23s latency). Not shown: 997 filtered ports PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.0 (protocol 2.0) 80/tcp open http Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9) 443/tcp open ssl/http Apache httpd 2.</description>
+    </item>
+    
     <item>
       <title>2022.6.10</title>
       <link>https://killdayu.com/posts/2022.6.10/</link>
@@ -34,33 +49,6 @@ https://github.com/Threekiii/Awesome-Redteam/blob/master/cheatsheets/攻防渗�
 https://github.com/Threekiii/Awesome-Exploit c2服务器流量隐匿
 https://github.com/wikiZ/RedGuard tip
 powershell history %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt wifi password for /f &amp;#34;skip=9 tokens=1,2 delims=:&amp;#34; %i in (&amp;#39;netsh wlan show profiles&amp;#39;) do @echo %j | findstr -i -v echo | netsh wlan show profiles %j key=clear Ctf tools</description>
-    </item>
-    
-    <item>
-      <title>2022.6.3</title>
-      <link>https://killdayu.com/posts/2022.6.3/</link>
-      <pubDate>Fri, 03 Jun 2022 19:10:33 +0800</pubDate>
-      
-      <guid>https://killdayu.com/posts/2022.6.3/</guid>
-      <description>好久不见，冒个泡，我只是废物。</description>
-    </item>
-    
-    <item>
-      <title>2022.5.13</title>
-      <link>https://killdayu.com/posts/2022.5.13/</link>
-      <pubDate>Fri, 13 May 2022 16:45:37 +0800</pubDate>
-      
-      <guid>https://killdayu.com/posts/2022.5.13/</guid>
-      <description>今早6点多才睡，因为手机快没电了。下午竟然1点多就醒了，然后看了下社区微信群，今天核酸下午4点就停了，之前明明是晚上9点，然后下午5点。。。。然后就不想去了，躺在床上纠结到了3点半，唉还是去吧，不然搞弹窗了又是一堆事，影响我周末躺平。测了下app的抓包，貌似发现了新的tips。凌晨刷知乎刷到了绝命毒师，感觉还不错，今晚开始刷剧。。。</description>
-    </item>
-    
-    <item>
-      <title>Hello_World</title>
-      <link>https://killdayu.com/posts/hello_world/</link>
-      <pubDate>Thu, 12 May 2022 19:44:56 +0800</pubDate>
-      
-      <guid>https://killdayu.com/posts/hello_world/</guid>
-      <description>print(&amp;#34;Hello World!&amp;#34;) </description>
     </item>
     
   </channel>
