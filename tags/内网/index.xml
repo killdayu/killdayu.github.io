@@ -16,7 +16,8 @@
       <pubDate>Tue, 14 Jun 2022 14:46:56 +0800</pubDate>
       
       <guid>https://killdayu.com/posts/htb_timelapse/</guid>
-      <description>这篇文章不小心误删了，吓尿了。
+      <description>其实昨天就写得差不多了，处理了点细节，今天又是下午2点才起床，明明我昨晚3点就睡了的，草。
+这篇文章不小心误删了，吓尿了。
 这是一个windows内网环境的一个靶机
 # Nmap 7.92 scan initiated Fri Apr 1 17:28:39 2022 as: nmap -sVC -p- -T4 -v -oN nmap/timelapse timelapse.htb Nmap scan report for timelapse.htb (10.10.11.152) Host is up (0.037s latency). Not shown: 65517 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 53/tcp open domain Simple DNS Plus 88/tcp open kerberos-sec Microsoft Windows Kerberos (server time: 2022-04-01 18:30:18Z) 135/tcp open msrpc Microsoft Windows RPC 139/tcp open netbios-ssn Microsoft Windows netbios-ssn 389/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: timelapse.</description>
     </item>
