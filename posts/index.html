@@ -163,6 +163,21 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>HTB_Timelapse
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>这是一个windows内网环境的一个靶机
+开放了139和445端口，smb服务
+用hydra爆破会出错，网上看了一下htb的机器都这样，貌似得需要旧版本的hydra smb库。
+┌──(kali㉿kali)-[~] └─$ hydra -L users.txt -P /usr/share/wordlists/rockyou.txt smb://10.10.11.152 Hydra v9.1 (c) 2020 by van Hauser/THC &amp; David Maciejak - Please do not use in military or secret service organizations, or for illegal purpose s (this is non-binding, these *** ignore laws and ethics anyway). Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2022-06-14 03:17:54 [INFO] Reduced number of tasks to 1 (smb does not like parallel connections) [DATA] max 1 task per 1 server, overall 1 task, 28688798 login tries (l:2/p:14344399), ~28688798 tries per task [DATA] attacking smb://10....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-06-14 14:46:56 +0800 CST'>June 14, 2022</span>&nbsp;·&nbsp;6 min&nbsp;·&nbsp;dayu</footer>
+  <a class="entry-link" aria-label="post link to HTB_Timelapse" href="https://killdayu.com/posts/htb_timelapse/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>全国职业院校技能大赛_信息安全管理与评估赛项_持续更新
     </h2>
   </header>
@@ -231,18 +246,6 @@ powershell history %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PS
   </div>
   <footer class="entry-footer"><span title='2022-06-06 12:53:21 +0800 CST'>June 6, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;dayu</footer>
   <a class="entry-link" aria-label="post link to Dingtalk_Location" href="https://killdayu.com/posts/dingtalk_location/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Supercookie
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。 https://github.com/jonasstrehle/supercookie https://supercookie.me/workwise</p>
-  </div>
-  <footer class="entry-footer"><span title='2022-06-06 12:49:21 +0800 CST'>June 6, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;dayu</footer>
-  <a class="entry-link" aria-label="post link to Supercookie" href="https://killdayu.com/posts/supercookie/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
