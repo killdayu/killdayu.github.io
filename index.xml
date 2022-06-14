@@ -16,10 +16,9 @@
       <pubDate>Tue, 14 Jun 2022 14:46:56 +0800</pubDate>
       
       <guid>https://killdayu.com/posts/htb_timelapse/</guid>
-      <description>这是一个windows内网环境的一个靶机
-开放了139和445端口，smb服务
-用hydra爆破会出错，网上看了一下htb的机器都这样，貌似得需要旧版本的hydra smb库。
-┌──(kali㉿kali)-[~] └─$ hydra -L users.txt -P /usr/share/wordlists/rockyou.txt smb://10.10.11.152 Hydra v9.1 (c) 2020 by van Hauser/THC &amp;amp; David Maciejak - Please do not use in military or secret service organizations, or for illegal purpose s (this is non-binding, these *** ignore laws and ethics anyway). Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2022-06-14 03:17:54 [INFO] Reduced number of tasks to 1 (smb does not like parallel connections) [DATA] max 1 task per 1 server, overall 1 task, 28688798 login tries (l:2/p:14344399), ~28688798 tries per task [DATA] attacking smb://10.</description>
+      <description>这篇文章不小心误删了，吓尿了。
+这是一个windows内网环境的一个靶机
+# Nmap 7.92 scan initiated Fri Apr 1 17:28:39 2022 as: nmap -sVC -p- -T4 -v -oN nmap/timelapse timelapse.htb Nmap scan report for timelapse.htb (10.10.11.152) Host is up (0.037s latency). Not shown: 65517 filtered tcp ports (no-response) PORT STATE SERVICE VERSION 53/tcp open domain Simple DNS Plus 88/tcp open kerberos-sec Microsoft Windows Kerberos (server time: 2022-04-01 18:30:18Z) 135/tcp open msrpc Microsoft Windows RPC 139/tcp open netbios-ssn Microsoft Windows netbios-ssn 389/tcp open ldap Microsoft Windows Active Directory LDAP (Domain: timelapse.</description>
     </item>
     
     <item>
