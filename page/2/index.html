@@ -150,18 +150,6 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2>Supercookie
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。 https://github.com/jonasstrehle/supercookie https://supercookie.me/workwise</p>
-  </div>
-  <footer class="entry-footer"><span title='2022-06-06 12:49:21 +0800 CST'>June 6, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;dayu</footer>
-  <a class="entry-link" aria-label="post link to Supercookie" href="https://killdayu.com/posts/supercookie/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2>2022.6.3
     </h2>
   </header>
