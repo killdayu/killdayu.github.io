@@ -8,7 +8,7 @@
 <title>Supercookie | dayu&#39;s blog</title>
 <meta name="keywords" content="tips">
 <meta name="description" content="我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。 https://github.com/jonasstrehle/supercookie https://supercookie.me/workwise">
-<meta name="author" content="dayu">
+<meta name="author" content="">
 <link rel="canonical" href="https://killdayu.com/posts/supercookie/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.d7fb4cbf980fe688a21621b06a795933c4e6bb2d4070ec940667af1715d84af2.css" integrity="sha256-1/tMv5gP5oiiFiGwanlZM8Tmuy1AcOyUBmevFxXYSvI=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
@@ -59,13 +59,11 @@
 </noscript><meta property="og:title" content="Supercookie" />
 <meta property="og:description" content="我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。 https://github.com/jonasstrehle/supercookie https://supercookie.me/workwise" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://killdayu.com/posts/supercookie/" /><meta property="og:image" content="https://killdayu.com/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://killdayu.com/posts/supercookie/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-06-06T12:49:21&#43;08:00" />
 <meta property="article:modified_time" content="2022-06-06T12:49:21&#43;08:00" />
 
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://killdayu.com/papermod-cover.png"/>
-
+<meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Supercookie"/>
 <meta name="twitter:description" content="我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。 https://github.com/jonasstrehle/supercookie https://supercookie.me/workwise"/>
 
@@ -105,10 +103,6 @@
   "inLanguage": "en",
   "datePublished": "2022-06-06T12:49:21+08:00",
   "dateModified": "2022-06-06T12:49:21+08:00",
-  "author":{
-    "@type": "Person",
-    "name": "dayu"
-  },
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "https://killdayu.com/posts/supercookie/"
@@ -192,15 +186,14 @@
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://killdayu.com/">Home</a>&nbsp;»&nbsp;<a href="https://killdayu.com/posts/">Posts</a></div>
+    
     <h1 class="post-title">
       Supercookie
     </h1>
-    <div class="post-meta"><span title='2022-06-06 12:49:21 +0800 CST'>June 6, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;dayu
+    <div class="post-meta"><span title='2022-06-06 12:49:21 +0800 CST'>June 6, 2022</span>
 
 </div>
   </header> 
-
   <div class="post-content"><p>我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。
 <a href="https://github.com/jonasstrehle/supercookie">https://github.com/jonasstrehle/supercookie</a>
 <a href="https://supercookie.me/workwise">https://supercookie.me/workwise</a></p>
@@ -212,19 +205,6 @@
     <ul class="post-tags">
       <li><a href="https://killdayu.com/tags/tips/">tips</a></li>
     </ul>
-<nav class="paginav">
-  <a class="prev" href="https://killdayu.com/posts/dingtalk_location/">
-    <span class="title">« Prev</span>
-    <br>
-    <span>Dingtalk_Location</span>
-  </a>
-  <a class="next" href="https://killdayu.com/posts/2022.6.3/">
-    <span class="title">Next »</span>
-    <br>
-    <span>2022.6.3</span>
-  </a>
-</nav>
-
   </footer>
 </article>
     </main>
@@ -296,53 +276,6 @@
         }
     })
 
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
-        const container = codeblock.parentNode.parentNode;
-
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
-
-        function copyingDone() {
-            copybutton.innerHTML = 'copied!';
-            setTimeout(() => {
-                copybutton.innerHTML = 'copy';
-            }, 2000);
-        }
-
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
-
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
-        });
-
-        if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
-        } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
-        } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
-        }
-    });
 </script>
 </body>
 
