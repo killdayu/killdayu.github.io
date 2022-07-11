@@ -14,7 +14,7 @@ https://www.hackthebox.com/
 linux
 sudo openvpn lab_lker.ovpn 2.user.txt 网上教程很多，就不细说了。
 ┌──(kali㉿kali)-[~/kali] └─$ nmap -sV 10.10.11.143 1 ⚙ Starting Nmap 7.91 ( https://nmap.org ) at 2022-06-13 01:23 EDT Nmap scan report for office.paper (10.10.11.143) Host is up (0.23s latency). Not shown: 997 filtered ports PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.0 (protocol 2.0) 80/tcp open http Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9) 443/tcp open ssl/http Apache httpd 2.">
-<meta name="author" content="">
+<meta name="author" content="dayu">
 <link rel="canonical" href="https://killdayu.com/posts/htb_paper/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.d7fb4cbf980fe688a21621b06a795933c4e6bb2d4070ec940667af1715d84af2.css" integrity="sha256-1/tMv5gP5oiiFiGwanlZM8Tmuy1AcOyUBmevFxXYSvI=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
@@ -71,11 +71,13 @@ linux
 sudo openvpn lab_lker.ovpn 2.user.txt 网上教程很多，就不细说了。
 ┌──(kali㉿kali)-[~/kali] └─$ nmap -sV 10.10.11.143 1 ⚙ Starting Nmap 7.91 ( https://nmap.org ) at 2022-06-13 01:23 EDT Nmap scan report for office.paper (10.10.11.143) Host is up (0.23s latency). Not shown: 997 filtered ports PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.0 (protocol 2.0) 80/tcp open http Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9) 443/tcp open ssl/http Apache httpd 2." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://killdayu.com/posts/htb_paper/" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://killdayu.com/posts/htb_paper/" /><meta property="og:image" content="https://killdayu.com/papermod-cover.png"/><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2022-06-13T12:35:46&#43;08:00" />
 <meta property="article:modified_time" content="2022-06-13T12:35:46&#43;08:00" />
 
-<meta name="twitter:card" content="summary"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://killdayu.com/papermod-cover.png"/>
+
 <meta name="twitter:title" content="HTB_Paper"/>
 <meta name="twitter:description" content="第一次玩htb，感觉还不错。
 https://www.hackthebox.com/
@@ -121,6 +123,10 @@ sudo openvpn lab_lker.ovpn 2.user.txt 网上教程很多，就不细说了。
   "inLanguage": "en",
   "datePublished": "2022-06-13T12:35:46+08:00",
   "dateModified": "2022-06-13T12:35:46+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "dayu"
+  },
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "https://killdayu.com/posts/htb_paper/"
@@ -204,14 +210,41 @@ sudo openvpn lab_lker.ovpn 2.user.txt 网上教程很多，就不细说了。
 
 <article class="post-single">
   <header class="post-header">
-    
+    <div class="breadcrumbs"><a href="https://killdayu.com/">Home</a>&nbsp;»&nbsp;<a href="https://killdayu.com/posts/">Posts</a></div>
     <h1 class="post-title">
       HTB_Paper
     </h1>
-    <div class="post-meta"><span title='2022-06-13 12:35:46 +0800 CST'>June 13, 2022</span>
+    <div class="post-meta"><span title='2022-06-13 12:35:46 +0800 CST'>June 13, 2022</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;dayu
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#1%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" aria-label="1.准备工作">1.准备工作</a></li>
+                <li>
+                    <a href="#2usertxt" aria-label="2.user.txt">2.user.txt</a></li>
+                <li>
+                    <a href="#3roottxt" aria-label="3.root.txt">3.root.txt</a></li>
+                <li>
+                    <a href="#4tips" aria-label="4.tips">4.tips</a><ul>
+                        
+                <li>
+                    <a href="#1%e6%b3%a8%e6%84%8f%e6%9c%8d%e5%8a%a1%e5%99%a8%e8%bf%94%e5%9b%9e%e7%9a%84x-backend-server" aria-label="1.注意服务器返回的X-Backend-Server">1.注意服务器返回的X-Backend-Server</a></li>
+                <li>
+                    <a href="#2procselfenviron" aria-label="2./proc/self/environ">2./proc/self/environ</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content"><p>第一次玩htb，感觉还不错。</p>
 <p><a href="https://www.hackthebox.com/">https://www.hackthebox.com/</a></p>
 <h3 id="1准备工作">1.准备工作<a hidden class="anchor" aria-hidden="true" href="#1准备工作">#</a></h3>
@@ -348,6 +381,19 @@ RESPOND_TO_EDITED=trueROCKETCHAT_USER=recyclopsLANG=en_US.UTF-8OLDPWD=/home/dwig
       <li><a href="https://killdayu.com/tags/htb/">htb</a></li>
       <li><a href="https://killdayu.com/tags/%E6%B8%97%E9%80%8F/">渗透</a></li>
     </ul>
+<nav class="paginav">
+  <a class="prev" href="https://killdayu.com/posts/htb_timelapse/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>HTB_Timelapse</span>
+  </a>
+  <a class="next" href="https://killdayu.com/posts/2022.6.10/">
+    <span class="title">Next »</span>
+    <br>
+    <span>2022.6.10</span>
+  </a>
+</nav>
+
   </footer>
 </article>
     </main>
@@ -419,6 +465,53 @@ RESPOND_TO_EDITED=trueROCKETCHAT_USER=recyclopsLANG=en_US.UTF-8OLDPWD=/home/dwig
         }
     })
 
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
 </script>
 </body>
 
