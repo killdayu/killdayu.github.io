@@ -76,7 +76,16 @@ Windows：卸载6月补丁，忘记kb号了，自己看看吧。关闭Defender�
         }
 
     </style>
-</noscript><meta property="og:title" content="CVE_2022_30190_MSDT_RCE" />
+</noscript>
+<link rel="stylesheet" href="/js/katex/katex.min.css" >
+<script src="/js/katex/katex.min.js" > </script>
+<script src="/js/katex/contrib/auto-render.min.js" ></script>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body);
+    });
+</script><meta property="og:title" content="CVE_2022_30190_MSDT_RCE" />
 <meta property="og:description" content="CVE-2022-30190 虽迟但到
 刚起床，然后有事，就看了下这个洞，几天前就看见过这个洞了，但是我是个废物就懒的弄。
 漏洞原理 首先说一下自己对这个洞的理解，这个洞的本质就是msdt过滤的问题，导致msdt协议可以执行powershell代码。
