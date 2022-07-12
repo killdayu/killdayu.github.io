@@ -163,6 +163,28 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>RSA算法
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>简介 RSA算法是一种非对称算法，即公钥和密钥不相同，本质是利用2个大素数的乘积难以做因素分解。
+算法 RSA算法的密钥由3个数构成N，d，e
+N由2个互不相同的素数的乘积构成 $$ N=pq $$
+根据欧拉函数，求得r，即小于N且与N互质的数的个数。 $$ {\displaystyle r=\varphi (N)=(p-1)(q-1)} $$
+选择其中的一个质数为e，找到一个数 d。 $$ ed \bmod r=1 $$
+现在N，d，e都已经拿到了，公钥是(N, e)，私钥是(N, d)。那么N和e就是公开的，而d是保密的。
+测试 然后就能使用公钥加密数据，然后私钥解密数据了。
+首先我们先选2个素数来算出N，我这里选择了3和5，那么N = 3 x 5 = 15
+那么r = (3 - 1) x (5 - 1) = 8，即15以内有8个数与它互质，他们分别是1，2，4，7，8，11，13，14。其中质数有2，7，11，13。
+这里选择11为e，根据(d x 11) % 8 = 1，求出d = 3
+d = 0 e = 11 r = 8 while(1): if ((d * e) % r == 1): print(d)	//3 break d = d &#43; 1 那么现在N = 15，e = 11，d = 3，公钥为(15, 11)，私钥为(15, 3)。...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-07-12 13:48:27 +0800 CST'>July 12, 2022</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;dayu</footer>
+  <a class="entry-link" aria-label="post link to RSA算法" href="https://killdayu.com/posts/rsa%E7%AE%97%E6%B3%95/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>CVE_2022_30190_MSDT_RCE
     </h2>
   </header>
@@ -253,18 +275,6 @@ powershell history %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PS
   </div>
   <footer class="entry-footer"><span title='2022-06-10 12:37:22 +0800 CST'>June 10, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;dayu</footer>
   <a class="entry-link" aria-label="post link to 2022.6.10" href="https://killdayu.com/posts/2022.6.10/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Dingtalk_Location
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>钉钉&#43;某助手配合某框架的通用化在没root的手机上实现远程打卡😋（之前都没想到弄），这样我就不用每天9点起床手动帮别人打卡了。还能配合gayhub上开源的auto. js某脚本实现自动打卡。</p>
-  </div>
-  <footer class="entry-footer"><span title='2022-06-06 12:53:21 +0800 CST'>June 6, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;dayu</footer>
-  <a class="entry-link" aria-label="post link to Dingtalk_Location" href="https://killdayu.com/posts/dingtalk_location/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

@@ -9,7 +9,26 @@
       <link>https://killdayu.com/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 25 Jun 2022 18:45:36 +0800</lastBuildDate><atom:link href="https://killdayu.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 12 Jul 2022 13:48:27 +0800</lastBuildDate><atom:link href="https://killdayu.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RSA算法</title>
+      <link>https://killdayu.com/posts/rsa%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Tue, 12 Jul 2022 13:48:27 +0800</pubDate>
+      
+      <guid>https://killdayu.com/posts/rsa%E7%AE%97%E6%B3%95/</guid>
+      <description>简介 RSA算法是一种非对称算法，即公钥和密钥不相同，本质是利用2个大素数的乘积难以做因素分解。
+算法 RSA算法的密钥由3个数构成N，d，e
+N由2个互不相同的素数的乘积构成 $$ N=pq $$
+根据欧拉函数，求得r，即小于N且与N互质的数的个数。 $$ {\displaystyle r=\varphi (N)=(p-1)(q-1)} $$
+选择其中的一个质数为e，找到一个数 d。 $$ ed \bmod r=1 $$
+现在N，d，e都已经拿到了，公钥是(N, e)，私钥是(N, d)。那么N和e就是公开的，而d是保密的。
+测试 然后就能使用公钥加密数据，然后私钥解密数据了。
+首先我们先选2个素数来算出N，我这里选择了3和5，那么N = 3 x 5 = 15
+那么r = (3 - 1) x (5 - 1) = 8，即15以内有8个数与它互质，他们分别是1，2，4，7，8，11，13，14。其中质数有2，7，11，13。
+这里选择11为e，根据(d x 11) % 8 = 1，求出d = 3
+d = 0 e = 11 r = 8 while(1): if ((d * e) % r == 1): print(d)	//3 break d = d + 1 那么现在N = 15，e = 11，d = 3，公钥为(15, 11)，私钥为(15, 3)。</description>
+    </item>
+    
     <item>
       <title>CVE_2022_30190_MSDT_RCE</title>
       <link>https://killdayu.com/posts/cve_2022_30190_msdt_rce/</link>
