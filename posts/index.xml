@@ -9,7 +9,19 @@
       <link>https://killdayu.com/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 21 Jul 2022 13:48:27 +0800</lastBuildDate><atom:link href="https://killdayu.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 08 Mar 2023 15:43:52 +0800</lastBuildDate><atom:link href="https://killdayu.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>天津电子信息渗透测试第一课</title>
+      <link>https://killdayu.com/posts/%E5%A4%A9%E6%B4%A5%E7%94%B5%E5%AD%90%E4%BF%A1%E6%81%AF%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%AC%AC%E4%B8%80%E8%AF%BE/</link>
+      <pubDate>Wed, 08 Mar 2023 15:43:52 +0800</pubDate>
+      
+      <guid>https://killdayu.com/posts/%E5%A4%A9%E6%B4%A5%E7%94%B5%E5%AD%90%E4%BF%A1%E6%81%AF%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%AC%AC%E4%B8%80%E8%AF%BE/</guid>
+      <description>第一节，ptes概述 一次成功的渗透测试应该考虑周到，按照与甲方达成的约定，在约定时间和约定测试范围内对业务的安全性、稳定性等进行测试。这需要前期良好的沟通，与甲方约定测试范围，哪些业务和资产是被允许访问的，协调可接受的测试方法和预期的测试成果。最重要的是满足甲方的需求。没有完全安全的系统，但是可以把风险与损失控制在可接受的范围内。渗透测试就是来评估系统中的漏洞和脆弱性，站在客户角度或者开发人员角度，给出专业性的意见和修改方案，给风险管理一个可参考的基准量表。
+渗透测试当然需要标准规范，专业的渗透测试需要一套标准流程，来帮助客户理解我们做了什么，能够更好地沟通，同时规范和标准化测试人员的行为和工作方法。
+PTES就是这样一个标准，它包含了渗透测试的几乎所有内容，从沟通到最后完成测试出具报告，具有很高的参考价值。
+第二节，网络基本环境拓扑 第三节，渗透测试报告实施方案撰写 </description>
+    </item>
+    
     <item>
       <title>php_反序列化_2</title>
       <link>https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_2/</link>

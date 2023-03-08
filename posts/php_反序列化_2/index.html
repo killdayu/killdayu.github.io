@@ -12,7 +12,7 @@ easy &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ pro
 poc &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } $a = new errorr0; $a-&gt;var=new errorr2; $a-&gt;var-&gt;data=&#39;phpinfo();&#39;; echo serialize($a);	//O:7:&#34;errorr0&#34;:1:{s:3:&#34;var&#34;;O:7:&#34;errorr2&#34;:1:{s:4:&#34;data&#34;;s:10:&#34;phpinfo();&#34;;}} //`errorr2::func()`-&gt;`errorr0::__destruct()`-&gt;`errorr0::__construct` ?">
 <meta name="author" content="dayu">
 <link rel="canonical" href="https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_2/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.8b523f1730c922e314350296d83fd666efa16519ca136320a93df674d00b6325.css" integrity="sha256-i1I/FzDJIuMUNQKW2D/WZu&#43;hZRnKE2MgqT32dNALYyU=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://killdayu.com/favicon.ico">
@@ -73,8 +73,8 @@ easy &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ pro
 poc &lt;?php //error_reporting(0); highlight_file(__FILE__); class errorr0{ protected $var; function __construct() { $this-&gt;var = new errorr1(); } function __destruct() { $this-&gt;var-&gt;func(); } } class errorr1 { public $var; function func() { echo $this-&gt;var; } } class errorr2 { private $data; public function func() { eval($this-&gt;data); } } $a = new errorr0; $a-&gt;var=new errorr2; $a-&gt;var-&gt;data=&#39;phpinfo();&#39;; echo serialize($a);	//O:7:&#34;errorr0&#34;:1:{s:3:&#34;var&#34;;O:7:&#34;errorr2&#34;:1:{s:4:&#34;data&#34;;s:10:&#34;phpinfo();&#34;;}} //`errorr2::func()`-&gt;`errorr0::__destruct()`-&gt;`errorr0::__construct` ?" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_2/" /><meta property="og:image" content="https://killdayu.com/papermod-cover.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-07-21T13:48:27&#43;08:00" />
-<meta property="article:modified_time" content="2022-07-21T13:48:27&#43;08:00" />
+<meta property="article:published_time" content="2022-07-21T13:48:27+08:00" />
+<meta property="article:modified_time" content="2022-07-21T13:48:27+08:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://killdayu.com/papermod-cover.png"/>
@@ -754,6 +754,11 @@ O%3A3%3A%22one%22%3A2%3A%7Bs%3A6%3A%22object%22%3BO%3A6%3A%22second%22%3A1%3A%7B
     <ul class="post-tags">
     </ul>
 <nav class="paginav">
+  <a class="prev" href="https://killdayu.com/posts/%E5%A4%A9%E6%B4%A5%E7%94%B5%E5%AD%90%E4%BF%A1%E6%81%AF%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%AC%AC%E4%B8%80%E8%AF%BE/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>天津电子信息渗透测试第一课</span>
+  </a>
   <a class="next" href="https://killdayu.com/posts/php_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96_1/">
     <span class="title">Next »</span>
     <br>
@@ -772,7 +777,7 @@ O%3A3%3A%22one%22%3A2%3A%7Bs%3A6%3A%22object%22%3BO%3A6%3A%22second%22%3A1%3A%7B
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://killdayu.com/">dayu&#39;s blog</a></span>
+    <span>&copy; 2023 <a href="https://killdayu.com/">dayu&#39;s blog</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

@@ -10,7 +10,7 @@
 <meta name="description" content="我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。 https://github.com/jonasstrehle/supercookie https://supercookie.me/workwise">
 <meta name="author" content="dayu">
 <link rel="canonical" href="https://killdayu.com/posts/supercookie/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.8b523f1730c922e314350296d83fd666efa16519ca136320a93df674d00b6325.css" integrity="sha256-i1I/FzDJIuMUNQKW2D/WZu&#43;hZRnKE2MgqT32dNALYyU=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bc1149f4a72aa4858d3a9f71462f75e5884ffe8073ea9d6d5761d5663d651e20.css" integrity="sha256-vBFJ9KcqpIWNOp9xRi915YhP/oBz6p1tV2HVZj1lHiA=" rel="preload stylesheet" as="style">
 <script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
     onload="hljs.initHighlightingOnLoad();"></script>
 <link rel="icon" href="https://killdayu.com/favicon.ico">
@@ -69,8 +69,8 @@
 <meta property="og:description" content="我草这个有点🐮，Google翻译看着有点头疼，原理大概就是浏览器会缓存网站的favicon.ico，然后缓存到的favicon.ico再次刷新网页的时候不会重新请求。服务器会在首次访问时创建多个路由（这样才能实现区分多个不同客户端），然后随机将一些路由的favicon.ico设置成200，同时按照路由的favicon.ico生成一个id。客户端再次刷新时由于缓存了某些路由之前的favicon.ico，就只会去请求之前404的favicon.ico，服务器就能得到404的favicon.ico请求然后还原出客户端的id。相当于实现了一个cookie，其实id的实习都源于浏览器的请求，所以代理这些网络层面的都隐藏不了。但是我试了下最新的Chrome失效了😋。但是貌似之前的Firefox中招了，Tor就是魔改的Firefox，也不知道有没有继承缓存favicon.ico这个特性😋，暗网不再暗网😋。一切特征都是supercookie😋。 https://github.com/jonasstrehle/supercookie https://supercookie.me/workwise" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://killdayu.com/posts/supercookie/" /><meta property="og:image" content="https://killdayu.com/papermod-cover.png"/><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-06-06T12:49:21&#43;08:00" />
-<meta property="article:modified_time" content="2022-06-06T12:49:21&#43;08:00" />
+<meta property="article:published_time" content="2022-06-06T12:49:21+08:00" />
+<meta property="article:modified_time" content="2022-06-06T12:49:21+08:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:image" content="https://killdayu.com/papermod-cover.png"/>
@@ -245,7 +245,7 @@
     </main>
     
 <footer class="footer">
-    <span>&copy; 2022 <a href="https://killdayu.com/">dayu&#39;s blog</a></span>
+    <span>&copy; 2023 <a href="https://killdayu.com/">dayu&#39;s blog</a></span>
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
